@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Buscador de Docentes</title>
+</head>
+<body>
+
+<input
+  id="buscador"
+  type="text"
+  placeholder="Buscar por apellidos o nombres..."
+  onkeyup="filtrar()"
+/>
+
+<ul id="lista"></ul>
+
+<hr>
+
+<div id="detalle">
+  <h3>Detalle del docente</h3>
+  <p><strong>Nombre:</strong> <span id="d-nombre">—</span></p>
+  <p><strong>DNI:</strong> <span id="d-dni">—</span></p>
+  <p><strong>Status:</strong> <span id="d-estado">—</span></p>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
