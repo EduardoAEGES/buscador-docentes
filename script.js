@@ -18,7 +18,8 @@ fetch(URL_CSV)
           sede: r["SEDE"]?.trim(),
           disponibilidad: r["DISPONIBILIDAD"]?.trim(),
           observaciones: r["OBSERVACION"]?.trim(),
-          diagnostico: r["DIAGNOSTICO"]?.trim()
+          diagnostico: r["DIAGNOSTICO"]?.trim(),
+          linea: r["LINEA"]?.trim()
         }));
       }
     });
@@ -63,9 +64,27 @@ function filtrar() {
 // Mostrar detalle
 function mostrarDetalle(r) {
   document.getElementById("d-nombre").textContent = r.nombre || "—";
-  document.getElementById("d-dni").textContent = formatearDNI(r.dni);
-  document.getElementById("d-estado").textContent = r.estado || "—";
+  document.getElementById("d-dni").textContent = r.dni?.padStart(8, "0") || "—";
+
+  const estadoEl = document.getElementById("d-estado");
+  const estadoTexto = (r.estado || "").trim().toUpperCase();
+
+  estadoEl.textContent = estadoTexto;
+
+  // limpiar clases previas
+  estadoEl.className = "estado";
+
+  // mapear estados a clases CSS
+  if (estadoTexto === "VIGENTE") {
+    estadoEl.classList.add("vigente");
+  } else if (estadoTexto === "OBSERVADO") {
+    estadoEl.classList.add("observado");
+  } else if (estadoTexto === "DESVINCULADO") {
+    estadoEl.classList.add("desvinculado");
+  }
+
   document.getElementById("d-contrato").textContent = r.contrato || "—";
+  document.getElementById("d-linea").textContent = r.linea || "—";
   document.getElementById("d-sede").textContent = r.sede || "—";
   document.getElementById("d-disponibilidad").textContent = r.disponibilidad || "—";
   document.getElementById("d-observaciones").textContent = r.observaciones || "—";
