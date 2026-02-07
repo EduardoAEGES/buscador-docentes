@@ -2,26 +2,44 @@ const URL_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSOAtzCK7kEKL_N
 
 let data = [];
 
+// Cargar y parsear el CSV correctamente
 fetch(URL_CSV)
   .then(r => r.text())
   .then(csv => {
-    const filas = csv.split("\n").slice(1);
-    data = filas.map(f => {
-      const c = f.split(",");
-      return {
-        dni: c[1]?.trim(),
-        nombre: c[2]?.trim(),
-        estado: c[3]?.trim()
-      };
+    Papa.parse(csv, {
+      header: true,          // 🔑 usamos encabezados
+      skipEmptyLines: true,
+      complete: res => {
+        data = res.data.map(r => ({
+          dni: r["DNI"]?.trim(),
+          nombre: r["APELLIDOS Y NOMBRES"]?.trim(),
+          estado: r["STATUS"]?.trim(),
+          contrato: r["CONTRATO"]?.trim(),
+          sede: r["SEDE"]?.trim(),
+          disponibilidad: r["DISPONIBILIDAD"]?.trim(),
+          observaciones: r["OBSERVACION"]?.trim(),
+          diagnostico: r["DIAGNOSTICO"]?.trim()
+        }));
+      }
     });
   });
 
+// Normalizar texto para búsquedas
 function normalizar(t) {
-  return t.toLowerCase()
+  return (t || "")
+    .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "");
 }
 
+// Dar formato de DNI
+function formatearDNI(dni) {
+  if (!dni) return "—";
+  return dni.length === 7 ? "0" + dni : dni;
+}
+
+
+// Buscar por nombre
 function filtrar() {
   const q = normalizar(document.getElementById("buscador").value);
   const ul = document.getElementById("lista");
@@ -29,20 +47,27 @@ function filtrar() {
 
   if (q.length < 2) return;
 
-  data
+  const resultados = data
     .filter(r => normalizar(r.nombre).includes(q))
-    .slice(0, 15)
-    .forEach(r => {
-      const li = document.createElement("li");
-      li.textContent = r.nombre;
-      li.style.cursor = "pointer";
-      li.onclick = () => mostrarDetalle(r);
-      ul.appendChild(li);
-    });
+    .slice(0, 15);
+
+  resultados.forEach(r => {
+    const li = document.createElement("li");
+    li.textContent = r.nombre;
+    li.style.cursor = "pointer";
+    li.onclick = () => mostrarDetalle(r);
+    ul.appendChild(li);
+  });
 }
 
+// Mostrar detalle
 function mostrarDetalle(r) {
-  document.getElementById("d-nombre").textContent = r.nombre;
-  document.getElementById("d-dni").textContent = r.dni;
-  document.getElementById("d-estado").textContent = r.estado;
+  document.getElementById("d-nombre").textContent = r.nombre || "—";
+  document.getElementById("d-dni").textContent = formatearDNI(r.dni);
+  document.getElementById("d-estado").textContent = r.estado || "—";
+  document.getElementById("d-contrato").textContent = r.contrato || "—";
+  document.getElementById("d-sede").textContent = r.sede || "—";
+  document.getElementById("d-disponibilidad").textContent = r.disponibilidad || "—";
+  document.getElementById("d-observaciones").textContent = r.observaciones || "—";
+  document.getElementById("d-diagnostico").textContent = r.diagnostico || "—";
 }

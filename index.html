@@ -3,27 +3,148 @@
 <head>
   <meta charset="UTF-8">
   <title>Buscador de Docentes</title>
+
+  <style>
+    /* ===== RESET SUAVE ===== */
+    body {
+      font-family: Arial, sans-serif;
+      background: transparent;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ===== CARD PRINCIPAL ===== */
+    .card {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.12);
+      max-width: 420px;
+    }
+
+    /* ===== BUSCADOR ===== */
+    #buscador {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #cfd8dc;
+      font-size: 14px;
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    #buscador:focus {
+      border-color: #0b3c5d;
+    }
+
+    /* ===== LISTA DE RESULTADOS ===== */
+    #lista {
+      list-style: none;
+      padding: 0;
+      margin: 12px 0;
+    }
+
+    #lista li {
+      padding: 8px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-size: 14px;
+    }
+
+    #lista li:hover {
+      background: #f1f5f9;
+    }
+
+    /* ===== SEPARADOR ===== */
+    hr {
+      border: none;
+      border-top: 1px solid #e0e0e0;
+      margin: 12px 0;
+    }
+
+    /* ===== DETALLE ===== */
+    #detalle h3 {
+      margin: 10px 0;
+      font-size: 16px;
+      color: #0b3c5d;
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 6px;
+    }
+
+    #detalle p {
+      margin: 6px 0;
+      font-size: 14px;
+      color: #333;
+    }
+
+    #detalle strong {
+      color: #555;
+    }
+
+    /* ===== ESTADOS ===== */
+    .estado {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .estado.vigente {
+      background: #e6f4ea;
+      color: #137333;
+    }
+
+    .estado.pendiente {
+      background: #fff4e5;
+      color: #b06000;
+    }
+
+    .estado.observado {
+      background: #fdecea;
+      color: #a50e0e;
+    }
+  </style>
 </head>
+
 <body>
 
-<input
-  id="buscador"
-  type="text"
-  placeholder="Buscar por apellidos o nombres..."
-  onkeyup="filtrar()"
-/>
+  <!-- ===== CARD ===== -->
+  <div class="card">
 
-<ul id="lista"></ul>
+    <input
+      id="buscador"
+      type="text"
+      placeholder="Buscar por apellidos o nombres..."
+      onkeyup="filtrar()"
+    />
 
-<hr>
+    <ul id="lista"></ul>
 
-<div id="detalle">
-  <h3>Detalle del docente</h3>
-  <p><strong>Nombre:</strong> <span id="d-nombre">—</span></p>
-  <p><strong>DNI:</strong> <span id="d-dni">—</span></p>
-  <p><strong>Status:</strong> <span id="d-estado">—</span></p>
-</div>
+    <hr>
 
-<script src="script.js"></script>
+    <div id="detalle">
+      <h3>Detalle del docente</h3>
+
+      <p><strong>Nombre:</strong> <span id="d-nombre">—</span></p>
+      <p><strong>DNI:</strong> <span id="d-dni">—</span></p>
+      <p>
+        <strong>Status:</strong>
+        <span id="d-estado" class="estado">—</span>
+      </p>
+      <p><strong>Tipo de contrato:</strong> <span id="d-contrato">—</span></p>
+      <p><strong>Sede:</strong> <span id="d-sede">—</span></p>
+      <p><strong>Disponibilidad:</strong> <span id="d-disponibilidad">—</span></p>
+      <p><strong>Comentarios/Observaciones:</strong> <span id="d-observaciones">—</span></p>
+      <p><strong>Diagnóstico:</strong> <span id="d-diagnostico">—</span></p>
+    </div>
+
+  </div>
+
+  <!-- ===== LIBRERÍAS ===== -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="script.js"></script>
+
 </body>
 </html>
