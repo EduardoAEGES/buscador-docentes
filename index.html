@@ -3,180 +3,353 @@
 
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Buscador de Docentes</title>
 
+  <!-- Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Icons: Phosphor Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
   <style>
-    /* ===== RESET SUAVE ===== */
-    body {
-      font-family: Arial, sans-serif;
-      background: transparent;
-      margin: 0;
-      padding: 0;
+    :root {
+      --primary: #0f172a;
+      /* Slate 900 */
+      --primary-light: #334155;
+      /* Slate 700 */
+      --accent: #3b82f6;
+      /* Blue 500 */
+      --bg-body: #f1f5f9;
+      /* Slate 100 */
+      --bg-card: #ffffff;
+      --text-label: #64748b;
+      /* Slate 500 */
+      --border: #e2e8f0;
+      /* Slate 200 */
     }
 
-    /* ===== CARD PRINCIPAL ===== */
-    .card {
-      background: #ffffff;
-      border-radius: 14px;
-      padding: 18px;
-      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
-      max-width: 420px;
-    }
-
-    /* ===== BUSCADOR ===== */
-    #buscador {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 8px;
-      border: 1px solid #cfd8dc;
-      font-size: 14px;
-      outline: none;
+    * {
       box-sizing: border-box;
     }
 
-    #buscador:focus {
-      border-color: #0b3c5d;
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-body);
+      background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+      background-size: 24px 24px;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
-    /* ===== RESULTS LIST ===== */
+    .main-container {
+      width: 100%;
+      max-width: 500px;
+      /* Centered Card Focus */
+      background: var(--bg-card);
+      border-radius: 24px;
+      box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+      overflow: hidden;
+      border: 1px solid #cbd5e1;
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      padding: 30px 24px;
+      color: white;
+      text-align: center;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .header p {
+      margin: 8px 0 0;
+      font-size: 13px;
+      opacity: 0.8;
+      font-weight: 400;
+    }
+
+    /* ===== SEARCH ===== */
+    .search-wrapper {
+      padding: 20px 24px 0;
+      position: relative;
+    }
+
+    .search-box {
+      position: relative;
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-label);
+      font-size: 18px;
+    }
+
+    #buscador {
+      width: 100%;
+      padding: 14px 16px 14px 40px;
+      border-radius: 12px;
+      border: 2px solid var(--border);
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+      transition: all 0.2s;
+      background: #f8fafc;
+    }
+
+    #buscador:focus {
+      border-color: var(--accent);
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    }
+
+    /* ===== LIST ===== */
     #lista {
       list-style: none;
       padding: 0;
-      margin: 0;
-      max-height: 400px;
+      margin: 10px 24px 0;
+      max-height: 250px;
       overflow-y: auto;
-      scrollbar-width: thin;
-      scrollbar-color: var(--border) transparent;
-    }
-
-    #lista::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    #lista::-webkit-scrollbar-thumb {
-      background-color: var(--border);
-      border-radius: 3px;
     }
 
     #lista li {
-      padding: 12px 16px;
-      margin-bottom: 8px;
-      border-radius: 8px;
+      padding: 10px 14px;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
       cursor: pointer;
-      transition: all 0.2s;
       font-size: 14px;
+      color: var(--primary-light);
       display: flex;
       align-items: center;
-      border: 1px solid transparent;
-      color: var(--text-main);
-      background: var(--bg-card);
-      /* Ensure visibility */
+      gap: 10px;
+      transition: background 0.2s;
     }
 
-    /* CSS-only icon */
-    #lista li::before {
-      content: '';
-      /* We'll use a background mask or unicode character for simplicity/safety */
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      margin-right: 12px;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath fill='%2364748b' d='M231.9,212a120.7,120.7,0,0,0-67.1-54.2,72,72,0,1,0-73.6,0A120.7,120.7,0,0,0,24.1,212a8,8,0,1,0,13.8,8,104.1,104.1,0,0,1,180.2,0,8,8,0,1,0,13.8-8Z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: contain;
-      flex-shrink: 0;
+    #lista li:first-child {
+      border-top: 1px solid var(--border);
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+    }
+
+    #lista li:last-child {
+      border-bottom: none;
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
     }
 
     #lista li:hover {
       background: #f1f5f9;
-      border-color: var(--border);
-      transform: translateX(2px);
       color: var(--accent);
     }
 
-    /* Since we removed the JS 'active' class logic, we rely on hover and focus-within if we could, 
-       but for now simple hover is enough to satisfy 'no functionality changes' */
-    /* ===== SEPARADOR ===== */
-    hr {
-      border: none;
-      border-top: 1px solid #e0e0e0;
-      margin: 12px 0;
+    #lista li i {
+      color: #94a3b8;
     }
 
-    /* ===== DETALLE ===== */
-    #detalle h3 {
-      margin: 10px 0;
-      font-size: 16px;
-      color: #0b3c5d;
-      border-bottom: 1px solid #e0e0e0;
-      padding-bottom: 6px;
+    /* ===== DETAILS ===== */
+    .details-section {
+      padding: 24px;
     }
 
-    #detalle p {
-      margin: 6px 0;
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .label {
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--text-label);
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .value {
       font-size: 14px;
-      color: #333;
+      font-weight: 500;
+      color: var(--primary);
+      background: #f8fafc;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      min-height: 38px;
+      display: flex;
+      align-items: center;
     }
 
-    #detalle strong {
-      color: #555;
+    .value.distinct {
+      background-color: #f0f9ff;
+      /* Light Blue-ish tint */
+      border-color: #e0f2fe;
+      color: #0c4a6e;
     }
 
-    /* ===== ESTADOS ===== */
-    .estado {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 12px;
+    /* ===== BADGES ===== */
+    .badge-container {
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+    }
+
+    .estado,
+    .linea-badge {
+      display: inline-flex;
+      padding: 4px 10px;
+      border-radius: 6px;
       font-size: 12px;
-      font-weight: bold;
+      font-weight: 700;
+      text-transform: uppercase;
     }
 
+    /* Status Colors */
     .estado.vigente {
-      background: #e6f4ea;
-      color: #137333;
+      background: #dcfce7;
+      color: #166534;
     }
 
     .estado.observado {
-      background: #fff4e5;
-      color: #b06000;
+      background: #ffedd5;
+      color: #9a3412;
     }
 
     .estado.desvinculado {
-      background: #fdecea;
-      color: #a50e0e;
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    /* Linea Colors */
+    .linea-contabilidad {
+      background: #fef08a;
+      color: #854d0e;
+    }
+
+    .linea-logico {
+      background: #bae6fd;
+      color: #0369a1;
+    }
+
+    .separator {
+      height: 1px;
+      background: var(--border);
+      margin: 20px 0;
+      border: none;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- ===== CARD ===== -->
-  <div class="card">
+  <div class="main-container">
 
-    <input id="buscador" type="text" placeholder="Buscar por apellidos o nombres..." onkeyup="filtrar()" />
+    <div class="header">
+      <h1><i class="ph ph-chalkboard-teacher"></i> Buscador Docente</h1>
+      <p>Sistema de Consultas</p>
+    </div>
 
-    <ul id="lista"></ul>
+    <div class="search-wrapper">
+      <div class="search-box">
+        <i class="ph ph-magnifying-glass"></i>
+        <input id="buscador" type="text" placeholder="Buscar por apellidos o nombres..." onkeyup="filtrar()" />
+      </div>
+      <ul id="lista"></ul>
+    </div>
 
-    <hr>
+    <hr class="separator" style="margin: 0;">
 
-    <div id="detalle">
-      <h3>Detalle del docente</h3>
+    <div class="details-section">
+      <div id="detalle" class="info-grid">
 
-      <p><strong>Nombre:</strong> <span id="d-nombre">—</span></p>
-      <p><strong>DNI:</strong> <span id="d-dni">—</span></p>
-      <p>
-        <strong>Status:</strong>
-        <span id="d-estado" class="estado">—</span>
-      </p>
-      <p><strong>Tipo de contrato:</strong> <span id="d-contrato">—</span></p>
-      <p><strong>Linea:</strong> 
-        <span id="d-linea" class="estado">—</span>
-      </p>
-      <p><strong>Sede:</strong> <span id="d-sede">—</span></p>
-      <p><strong>Disponibilidad:</strong> <span id="d-disponibilidad">—</span></p>
-      <p><strong>Comentarios/Observaciones:</strong> <span id="d-observaciones">—</span></p>
-      <p><strong>Diagnóstico:</strong> <span id="d-diagnostico">—</span></p>
+        <!-- Nombre -->
+        <div class="info-item full-width">
+          <span class="label"><i class="ph ph-user"></i> Docente</span>
+          <span id="d-nombre" class="value distinct">—</span>
+        </div>
+
+        <!-- DNI -->
+        <div class="info-item">
+          <span class="label"><i class="ph ph-identification-card"></i> DNI</span>
+          <span id="d-dni" class="value distinct">—</span>
+        </div>
+
+        <!-- Status -->
+        <div class="info-item">
+          <span class="label"><i class="ph ph-traffic-signal"></i> Estado</span>
+          <div class="badge-container">
+            <span id="d-estado" class="estado">—</span>
+          </div>
+        </div>
+
+        <!-- Contrato -->
+        <div class="info-item">
+          <span class="label"><i class="ph ph-file-text"></i> Tipo de Contrato</span>
+          <span id="d-contrato" class="value">—</span>
+        </div>
+
+        <!-- Sede -->
+        <div class="info-item">
+          <span class="label"><i class="ph ph-map-pin"></i> Sede</span>
+          <span id="d-sede" class="value distinct">—</span>
+        </div>
+
+        <!-- Linea -->
+        <div class="info-item full-width">
+          <span class="label"><i class="ph ph-graduation-cap"></i> Línea</span>
+          <div class="badge-container">
+            <span id="d-linea" class="linea-badge">—</span>
+          </div>
+        </div>
+
+        <!-- Disponibilidad -->
+        <div class="info-item full-width">
+          <span class="label"><i class="ph ph-clock"></i> Disponibilidad</span>
+          <span id="d-disponibilidad" class="value">—</span>
+        </div>
+
+        <!-- Observaciones -->
+        <div class="info-item full-width">
+          <span class="label"><i class="ph ph-info"></i> Observaciones</span>
+          <span id="d-observaciones" class="value" style="font-size: 13px;">—</span>
+        </div>
+
+        <!-- Diagnostico -->
+        <div class="info-item full-width">
+          <span class="label"><i class="ph ph-stethoscope"></i> Diagnóstico</span>
+          <span id="d-diagnostico" class="value">—</span>
+        </div>
+
+      </div>
     </div>
 
   </div>

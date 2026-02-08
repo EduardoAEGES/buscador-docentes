@@ -7,20 +7,31 @@ fetch(URL_CSV)
   .then(r => r.text())
   .then(csv => {
     Papa.parse(csv, {
-      header: true,          // 🔑 usamos encabezados
+      header: true,
       skipEmptyLines: true,
+      transformHeader: h => h.trim(), // 🔑 Limpiar espacios en cabeceras
       complete: res => {
-        data = res.data.map(r => ({
-          dni: r["DNI"]?.trim(),
-          nombre: r["APELLIDOS Y NOMBRES"]?.trim(),
-          estado: r["STATUS"]?.trim(),
-          contrato: r["CONTRATO"]?.trim(),
-          sede: r["SEDE"]?.trim(),
-          disponibilidad: r["DISPONIBILIDAD"]?.trim(),
-          observaciones: r["OBSERVACION"]?.trim(),
-          diagnostico: r["DIAGNOSTICO"]?.trim(),
-          linea: r["LINEA"]?.trim()
-        }));
+
+         // 👇 PON ESTO AQUÍ
+    console.log("CABECERAS DEL CSV:", res.meta.fields);
+    console.log("PRIMERA FILA:", res.data[0]);
+
+        data = res.data.map(r => {
+          // Buscar dinámicamente la llave de contrato
+          const contractKey = Object.keys(r).find(k => k.toUpperCase().includes("CONTRATO"));
+
+          return {
+            dni: r["DNI"]?.trim(),
+            nombre: r["APELLIDOS Y NOMBRES"]?.trim(),
+            estado: r["STATUS"]?.trim(),
+            contrato: r[contractKey]?.trim(), // Usar la llave encontrada
+            sede: r["SEDE"]?.trim(),
+            disponibilidad: r["DISPONIBILIDAD"]?.trim(),
+            observaciones: r["OBSERVACION"]?.trim(),
+            diagnostico: r["DIAGNOSTICO"]?.trim(),
+            linea: r["LINEA"]?.trim()
+          };
+        });
       }
     });
   });
@@ -70,7 +81,7 @@ function mostrarDetalle(r) {
   const estadoTexto = (r.estado || "").trim().toUpperCase();
 
   estadoEl.textContent = estadoTexto;
-
+  
   // limpiar clases previas
   estadoEl.className = "estado";
 
@@ -83,8 +94,28 @@ function mostrarDetalle(r) {
     estadoEl.classList.add("desvinculado");
   }
 
+  // Actualizar buscador con el nombre seleccionado
+  document.getElementById("buscador").value = r.nombre || "";
+  // Opcional: Limpiar la lista para que no estorbe
+  document.getElementById("lista").innerHTML = "";
+
+  const lineaEl = document.getElementById("d-linea");
+  const lineaTexto = (r.linea || "").trim(); // Mantener original casing o upper? User dijo "CONTABILIDAD"
+
+  lineaEl.textContent = lineaTexto || "—";
+
+  // Resetear clases base
+  lineaEl.className = "linea-badge";
+
+  // Lógica de colores para Linea
+  const upperLinea = lineaTexto.toUpperCase();
+  if (upperLinea.includes("CONTABILIDAD")) {
+    lineaEl.classList.add("linea-contabilidad");
+  } else if (upperLinea.includes("PENSAMIENTO LOGICO") || upperLinea.includes("PENSAMIENTO LÓGICO")) {
+    lineaEl.classList.add("linea-logico");
+  }
+
   document.getElementById("d-contrato").textContent = r.contrato || "—";
-  document.getElementById("d-linea").textContent = r.linea || "—";
   document.getElementById("d-sede").textContent = r.sede || "—";
   document.getElementById("d-disponibilidad").textContent = r.disponibilidad || "—";
   document.getElementById("d-observaciones").textContent = r.observaciones || "—";
