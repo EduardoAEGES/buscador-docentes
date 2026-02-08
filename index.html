@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <title>Buscador de Docentes</title>
@@ -18,7 +19,7 @@
       background: #ffffff;
       border-radius: 14px;
       padding: 18px;
-      box-shadow: 0 8px 22px rgba(0,0,0,0.12);
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
       max-width: 420px;
     }
 
@@ -37,25 +38,65 @@
       border-color: #0b3c5d;
     }
 
-    /* ===== LISTA DE RESULTADOS ===== */
+    /* ===== RESULTS LIST ===== */
     #lista {
       list-style: none;
       padding: 0;
-      margin: 12px 0;
+      margin: 0;
+      max-height: 400px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+
+    #lista::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    #lista::-webkit-scrollbar-thumb {
+      background-color: var(--border);
+      border-radius: 3px;
     }
 
     #lista li {
-      padding: 8px 10px;
-      border-radius: 6px;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      border-radius: 8px;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: all 0.2s;
       font-size: 14px;
+      display: flex;
+      align-items: center;
+      border: 1px solid transparent;
+      color: var(--text-main);
+      background: var(--bg-card);
+      /* Ensure visibility */
+    }
+
+    /* CSS-only icon */
+    #lista li::before {
+      content: '';
+      /* We'll use a background mask or unicode character for simplicity/safety */
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      margin-right: 12px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath fill='%2364748b' d='M231.9,212a120.7,120.7,0,0,0-67.1-54.2,72,72,0,1,0-73.6,0A120.7,120.7,0,0,0,24.1,212a8,8,0,1,0,13.8,8,104.1,104.1,0,0,1,180.2,0,8,8,0,1,0,13.8-8Z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      flex-shrink: 0;
     }
 
     #lista li:hover {
       background: #f1f5f9;
+      border-color: var(--border);
+      transform: translateX(2px);
+      color: var(--accent);
     }
 
+    /* Since we removed the JS 'active' class logic, we rely on hover and focus-within if we could, 
+       but for now simple hover is enough to satisfy 'no functionality changes' */
     /* ===== SEPARADOR ===== */
     hr {
       border: none;
@@ -113,12 +154,7 @@
   <!-- ===== CARD ===== -->
   <div class="card">
 
-    <input
-      id="buscador"
-      type="text"
-      placeholder="Buscar por apellidos o nombres..."
-      onkeyup="filtrar()"
-    />
+    <input id="buscador" type="text" placeholder="Buscar por apellidos o nombres..." onkeyup="filtrar()" />
 
     <ul id="lista"></ul>
 
@@ -148,4 +184,5 @@
   <script src="script.js"></script>
 
 </body>
+
 </html>
