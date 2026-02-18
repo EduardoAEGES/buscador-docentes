@@ -267,6 +267,62 @@
       border: none;
     }
 
+    /* ===== COLLAPSIBLE ===== */
+    .collapsible-wrapper {
+      margin-top: 16px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .collapsible-header {
+      background: #f8fafc;
+      padding: 12px 16px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+      transition: background 0.2s;
+    }
+
+    .collapsible-header:hover {
+      background: #f1f5f9;
+    }
+
+    .collapsible-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .collapsible-icon {
+      transition: transform 0.3s ease;
+      font-size: 16px;
+      color: var(--text-label);
+    }
+
+    .collapsible-header.active .collapsible-icon {
+      transform: rotate(180deg);
+    }
+
+    .collapsible-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+      background: #fff;
+    }
+
+    .collapsible-body {
+      padding: 16px;
+      display: grid;
+      gap: 16px;
+    }
+
+
     /* ===== SCHEDULE ===== */
     .schedule-actions {
       text-align: center;
@@ -582,7 +638,8 @@
     <hr class="separator" style="margin: 0;">
 
     <div class="details-section">
-      <div id="detalle" class="info-grid">
+      <!-- Sección General (Fija) -->
+      <div class="info-grid">
 
         <!-- Nombre -->
         <div class="info-item full-width">
@@ -623,26 +680,39 @@
             <span id="d-linea" class="linea-badge">—</span>
           </div>
         </div>
-
-        <!-- Disponibilidad -->
-        <div class="info-item full-width">
-          <span class="label"><i class="ph ph-clock"></i> Disponibilidad</span>
-          <span id="d-disponibilidad" class="value">—</span>
-        </div>
-
-        <!-- Observaciones -->
-        <div class="info-item full-width">
-          <span class="label"><i class="ph ph-info"></i> Observaciones</span>
-          <span id="d-observaciones" class="value" style="font-size: 13px;">—</span>
-        </div>
-
-        <!-- Diagnostico -->
-        <div class="info-item full-width">
-          <span class="label"><i class="ph ph-stethoscope"></i> Diagnóstico</span>
-          <span id="d-diagnostico" class="value">—</span>
-        </div>
-
       </div>
+
+      <!-- Sección Información (Colapsable) -->
+      <div class="collapsible-wrapper">
+        <div class="collapsible-header" onclick="toggleCollapsible(this)">
+          <div class="collapsible-title">
+            <i class="ph ph-info"></i> Información Adicional
+          </div>
+          <i class="ph ph-caret-down collapsible-icon"></i>
+        </div>
+        <div class="collapsible-content">
+          <div class="collapsible-body">
+            <!-- Disponibilidad -->
+            <div class="info-item full-width">
+              <span class="label"><i class="ph ph-clock"></i> Disponibilidad</span>
+              <span id="d-disponibilidad" class="value">—</span>
+            </div>
+
+            <!-- Observaciones -->
+            <div class="info-item full-width">
+              <span class="label"><i class="ph ph-info"></i> Observaciones</span>
+              <span id="d-observaciones" class="value" style="font-size: 13px;">—</span>
+            </div>
+
+            <!-- Diagnostico -->
+            <div class="info-item full-width">
+              <span class="label"><i class="ph ph-stethoscope"></i> Diagnóstico</span>
+              <span id="d-diagnostico" class="value">—</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- Botón Horario -->

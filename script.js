@@ -148,6 +148,14 @@ function mostrarDetalle(r) {
   document.getElementById("d-observaciones").textContent = r.observaciones || "—";
   document.getElementById("d-diagnostico").textContent = r.diagnostico || "—";
 
+  // Reset collapsible state
+  const collapsibleHeader = document.querySelector(".collapsible-header");
+  const collapsibleContent = document.querySelector(".collapsible-content");
+  if (collapsibleHeader && collapsibleContent) {
+    collapsibleHeader.classList.remove("active");
+    collapsibleContent.style.maxHeight = null;
+  }
+
   // Renderizar horario
   // renderSchedule(r.dni, r.nombre); NO renderizar automáticamente
 
@@ -376,4 +384,15 @@ function downloadSchedulePDF() {
   });
 
   doc.save(`Horario_${dni}.pdf`);
+}
+
+function toggleCollapsible(header) {
+  header.classList.toggle("active");
+  const content = header.nextElementSibling;
+
+  if (content.style.maxHeight) {
+    content.style.maxHeight = null;
+  } else {
+    content.style.maxHeight = content.scrollHeight + "px";
+  }
 }
