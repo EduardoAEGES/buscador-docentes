@@ -266,6 +266,299 @@
       margin: 20px 0;
       border: none;
     }
+
+    /* ===== SCHEDULE ===== */
+    .schedule-actions {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .btn-schedule {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    .btn-schedule:hover:not(:disabled) {
+      background: var(--primary-light);
+      transform: translateY(-1px);
+    }
+
+    .btn-schedule:disabled {
+      background: var(--border);
+      color: var(--text-label);
+      cursor: not-allowed;
+    }
+
+    .schedule-container {
+      margin-top: 20px;
+      overflow-x: auto;
+      display: none;
+      /* Hidden by default */
+    }
+
+    .schedule-container.visible {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .schedule-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      /* Smaller font for better fit */
+      min-width: 1000px;
+      /* Force wide scroll */
+    }
+
+    .schedule-table th,
+    .schedule-table td {
+      border: 1px solid var(--border);
+      padding: 6px;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .schedule-table th {
+      background: #f8fafc;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    /* SEDE COLORS */
+    .bg-virtual {
+      background-color: #a9d18e !important;
+      color: #000;
+    }
+
+    .bg-adelanto {
+      background-color: #fff2cc !important;
+      color: #000;
+    }
+
+    .bg-ate {
+      background-color: #f4b084 !important;
+      color: #000;
+    }
+
+    .bg-ves {
+      background-color: #9bc2e6 !important;
+      color: #000;
+    }
+
+    .bg-cal {
+      background-color: #ffc7ce !important;
+      color: #000;
+    }
+
+    .bg-nor {
+      background-color: #ffd966 !important;
+      color: #000;
+    }
+
+    .bg-cix {
+      background-color: #a5a5a5 !important;
+      color: #000;
+    }
+
+    .bg-aqp {
+      background-color: #b4a7d6 !important;
+      color: #000;
+    }
+
+    .bg-prc {
+      background-color: #00ffff !important;
+      color: #000;
+    }
+
+    .bg-asincrono {
+      background-color: #000000 !important;
+      color: #fff;
+    }
+
+    .schedule-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+      justify-content: center;
+      font-size: 11px;
+    }
+
+    .legend-item {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      border: none;
+    }
+
+    /* ===== MODAL ===== */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.6);
+      /* Darker slate blur */
+      z-index: 2000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(8px);
+      /* Stronger blur */
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .modal-content {
+      background: white;
+      width: 100%;
+      max-width: 1100px;
+      /* Wider for schedule */
+      max-height: 85vh;
+      border-radius: 16px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transform: scale(0.95);
+      transition: transform 0.2s ease-out;
+    }
+
+    .modal-overlay.active .modal-content {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: white;
+      z-index: 10;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .close-modal {
+      background: #f1f5f9;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: var(--text-label);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .close-modal:hover {
+      background: #e2e8f0;
+      color: var(--primary);
+    }
+
+    .modal-body {
+      padding: 0;
+      /* Remove padding for edge-to-edge look */
+      overflow-y: hidden;
+      /* Handle scroll in inner container */
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .modal-body-scroll {
+      padding: 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    /* ===== SCHEDULE ===== */
+    .schedule-container {
+      margin-top: 0;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      /* For radius */
+    }
+
+    .schedule-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      min-width: 800px;
+    }
+
+    .schedule-table th,
+    .schedule-table td {
+      border: 1px solid var(--border);
+      padding: 12px 10px;
+      /* More padding */
+      text-align: center;
+    }
+
+    .schedule-table th {
+      background: #f8fafc;
+      font-weight: 600;
+      color: var(--primary-light);
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+
+    .schedule-table td {
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    .schedule-table tr:hover td {
+      background-color: rgba(241, 245, 249, 0.5);
+      /* Slight hover */
+    }
   </style>
 </head>
 
@@ -352,10 +645,68 @@
       </div>
     </div>
 
+    <!-- Botón Horario -->
+    <div class="schedule-actions">
+      <button id="btn-ver-horario" class="btn-schedule" onclick="toggleSchedule()" disabled>
+        <i class="ph ph-calendar-blank"></i> Ver Horario
+      </button>
+    </div>
+
+    <!-- Contenedor Horario (MODAL) -->
+    <!-- Se movió fuera del flujo normal, ver abajo -->
+
   </div>
+
+  <!-- MODAL STRUCTURE -->
+  <div id="schedule-modal" class="modal-overlay" onclick="closeSchedule(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+
+      <div class="modal-header">
+        <h2 id="modal-teacher-name">Horario Docente</h2>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <button id="btn-download-pdf" class="btn-schedule" style="padding: 8px 16px; font-size: 13px; display: none;"
+            onclick="downloadSchedulePDF()">
+            <i class="ph ph-file-pdf"></i> PDF
+          </button>
+          <button class="close-modal" onclick="closeSchedule()"><i class="ph ph-x"></i></button>
+        </div>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="modal-body-scroll">
+          <!-- Leyenda -->
+          <div id="schedule-legend" class="schedule-legend">
+            <span class="legend-item bg-virtual">VIRTUAL</span>
+            <span class="legend-item bg-adelanto">ADELANTO</span>
+            <span class="legend-item bg-ate">ATE</span>
+            <span class="legend-item bg-ves">VES</span>
+            <span class="legend-item bg-cal">CAL</span>
+            <span class="legend-item bg-nor">NOR</span>
+            <span class="legend-item bg-cix">CIX</span>
+            <span class="legend-item bg-aqp">AQP</span>
+            <span class="legend-item bg-prc">PRC</span>
+            <span class="legend-item bg-asincrono">ASINCRONO</span>
+          </div>
+
+          <div id="loading-schedule"
+            style="text-align: center; font-size: 13px; color: var(--text-label); display: none; padding: 10px;">
+            <i class="ph ph-spinner ph-spin"></i> Cargando horario...
+          </div>
+
+          <div id="schedule-container" class="schedule-container" style="display: block;"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 
   <!-- ===== LIBRERÍAS ===== -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <!-- jsPDF & autoTable -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
   <script src="script.js"></script>
 
 </body>
