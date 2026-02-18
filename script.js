@@ -1,16 +1,20 @@
 const URL_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSOAtzCK7kEKL_NaeHfOFczW4YswgOmLqxVT1B_luq6HAwg4pELhT3bB93ky3lqHw/pub?gid=1579919371&single=true&output=csv";
-const URL_HORARIO = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQB9TpfaUwVf8iaaDnrkL79XKE7WBjGDkwoQguRhSV7dg50-0kSpTejMi8KW5P_AAMzi5APt4NP-p6y/pub?gid=1657026679&single=true&output=csv";
+const URL_HORARIO_2026_1 = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSBNRkVYe6--uWFebASdwlxRvdOc-9q9-ko_5jqrWZbDMDBnhIW573blCfgLz-STjmiPwK9hoVOCaNl/pub?gid=1657026679&single=true&output=csv";
+const URL_HORARIO_2026_2 = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQB9TpfaUwVf8iaaDnrkL79XKE7WBjGDkwoQguRhSV7dg50-0kSpTejMi8KW5P_AAMzi5APt4NP-p6y/pub?gid=1657026679&single=true&output=csv";
 
 let data = [];
-let scheduleData = [];
+let scheduleData2026_1 = [];
+let scheduleData2026_2 = [];
 
-// Cargar ambos CSVs al iniciar
+// Cargar todos los CSVs al iniciar
 Promise.all([
   fetch(URL_CSV).then(r => r.text()),
-  fetch(URL_HORARIO).then(r => r.text())
-]).then(([mainCsv, scheduleCsv]) => {
+  fetch(URL_HORARIO_2026_1).then(r => r.text()),
+  fetch(URL_HORARIO_2026_2).then(r => r.text())
+]).then(([mainCsv, scheduleCsv1, scheduleCsv2]) => {
   parseMainData(mainCsv);
-  parseScheduleData(scheduleCsv);
+  parseScheduleData(scheduleCsv1, 1);
+  parseScheduleData(scheduleCsv2, 2);
 });
 
 function parseMainData(csv) {
@@ -37,14 +41,14 @@ function parseMainData(csv) {
   });
 }
 
-function parseScheduleData(csv) {
+function parseScheduleData(csv, type) {
   // El CSV de horario tiene basura en las primeras 3 líneas.
   // Buscamos la línea que empieza con los encabezados reales (ej. contiene "DNI" y "NOMBRES")
   const lines = csv.split("\n");
   const headerIndex = lines.findIndex(l => l.includes("DNI") && l.includes("NOMBRES"));
 
   if (headerIndex === -1) {
-    console.error("No se encontraron cabeceras en el CSV de horario");
+    console.error(`No se encontraron cabeceras en el CSV de horario tipo ${type}`);
     return;
   }
 
@@ -56,8 +60,13 @@ function parseScheduleData(csv) {
     skipEmptyLines: true,
     transformHeader: h => h.trim(),
     complete: res => {
-      scheduleData = res.data;
-      console.log("Horario cargado:", scheduleData.length, "registros");
+      if (type === 1) {
+        scheduleData2026_1 = res.data;
+        console.log("Horario 2026-1 cargado:", scheduleData2026_1.length, "registros");
+      } else {
+        scheduleData2026_2 = res.data;
+        console.log("Horario 2026-2 cargado:", scheduleData2026_2.length, "registros");
+      }
     }
   });
 }
@@ -157,47 +166,61 @@ function mostrarDetalle(r) {
   }
 
   // Renderizar horario
-  // renderSchedule(r.dni, r.nombre); NO renderizar automáticamente
+  // validacion de botones
+  const existeEnHorario1 = scheduleData2026_1.some(h => h["DNI"] === r.dni);
+  const existeEnHorario2 = scheduleData2026_2.some(h => h["DNI"] === r.dni);
 
+  const btnHorario1 = document.getElementById("btn-ver-horario-2026-1");
+  const btnHorario2 = document.getElementById("btn-ver-horario-2026-2");
 
-  // Validar si tiene horario (DNI existe en el archivo de horario)
-  const existeEnHorario = scheduleData.some(h => h["DNI"] === r.dni);
-  const btnHorario = document.getElementById("btn-ver-horario");
+  // Resetear estados
   const legend = document.getElementById("schedule-legend");
   const container = document.getElementById("schedule-container");
   const mobileContainer = document.getElementById("schedule-mobile-container");
 
-  // Reset UI features
   container.innerHTML = "";
   container.style.display = "none";
   if (mobileContainer) mobileContainer.innerHTML = "";
-
   legend.style.display = "none";
 
-  if (existeEnHorario) {
-    btnHorario.disabled = false;
-    btnHorario.innerHTML = '<i class="ph ph-calendar-blank"></i> Ver Horario';
-    btnHorario.onclick = () => openSchedule(r.dni, r.nombre);
+  // Configurar Botón 1 (Enero - Marzo)
+  if (existeEnHorario1) {
+    btnHorario1.disabled = false;
+    btnHorario1.innerHTML = '<i class="ph ph-calendar-blank"></i> Enero - Marzo 2026';
+    btnHorario1.onclick = () => openSchedule(r.dni, r.nombre, 1);
   } else {
-    btnHorario.disabled = true;
-    btnHorario.innerHTML = '<i class="ph ph-link-break"></i> DOCENTE NO VINCULADO';
-    btnHorario.onclick = null;
+    btnHorario1.disabled = true;
+    btnHorario1.innerHTML = '<i class="ph ph-prohibit"></i> Ene-Mar: No disp.';
+    btnHorario1.onclick = null;
+  }
+
+  // Configurar Botón 2 (Marzo - Julio)
+  if (existeEnHorario2) {
+    btnHorario2.disabled = false;
+    btnHorario2.innerHTML = '<i class="ph ph-calendar-blank"></i> Marzo - Julio 2026';
+    btnHorario2.onclick = () => openSchedule(r.dni, r.nombre, 2);
+  } else {
+    btnHorario2.disabled = true;
+    btnHorario2.innerHTML = '<i class="ph ph-prohibit"></i> Mar-Jul: No disp.';
+    btnHorario2.onclick = null;
   }
 }
 
-function openSchedule(dni, nombre) {
+function openSchedule(dni, nombre, type) {
   const modal = document.getElementById("schedule-modal");
   const modalTitle = document.getElementById("modal-teacher-name");
   const btnPdf = document.getElementById("btn-download-pdf");
 
-  modalTitle.textContent = "Horario: " + nombre;
+  const periodo = type === 1 ? "Enero - Marzo 2026" : "Marzo - Julio 2026";
+  modalTitle.textContent = `Horario (${periodo}): ${nombre}`;
 
   // Guardar datos actuales para el PDF
   window.currentScheduleDni = dni;
   window.currentScheduleName = nombre;
+  window.currentScheduleType = type;
 
   // Renderizar y verificar si tiene carga
-  const tieneCarga = renderSchedule(dni, nombre);
+  const tieneCarga = renderSchedule(dni, nombre, type);
   const container = document.getElementById("schedule-container");
 
   if (tieneCarga) {
@@ -237,14 +260,17 @@ function getCellClass(text) {
   return "";
 }
 
-function renderSchedule(dni, nombre) {
+function renderSchedule(dni, nombre, type) {
   const container = document.getElementById("schedule-container");
   container.innerHTML = "";
 
   if (!dni) return false;
 
+  // Elegir dataset
+  const dataset = type === 1 ? scheduleData2026_1 : scheduleData2026_2;
+
   // Filtrar horario por DNI
-  const horarioDocente = scheduleData.filter(h => h["DNI"] === dni);
+  const horarioDocente = dataset.filter(h => h["DNI"] === dni);
 
   // Verificar si tiene alguna clase asignada (alguna celda de días con contenido)
   const dias = ["LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES", "SABADO", "DOMINGO"];
@@ -386,10 +412,12 @@ function downloadSchedulePDF() {
 
   const dni = window.currentScheduleDni;
   const nombre = window.currentScheduleName;
+  const type = window.currentScheduleType || 2; // Default to 2 if missing
 
   if (!dni) return;
 
-  const horarioDocente = scheduleData.filter(h => h["DNI"] === dni);
+  const dataset = type === 1 ? scheduleData2026_1 : scheduleData2026_2;
+  const horarioDocente = dataset.filter(h => h["DNI"] === dni);
 
   // Título
   doc.setFontSize(16);
