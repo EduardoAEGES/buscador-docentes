@@ -611,9 +611,87 @@
       font-weight: 500;
     }
 
+    .schedule-table td {
+      color: var(--primary);
+      font-weight: 500;
+    }
+
     .schedule-table tr:hover td {
       background-color: rgba(241, 245, 249, 0.5);
       /* Slight hover */
+    }
+
+    /* ===== MOBILE SCHEDULE ===== */
+    .schedule-mobile-container {
+      display: none;
+    }
+
+    .mobile-day-group {
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .mobile-day-header {
+      background: #f1f5f9;
+      padding: 10px 16px;
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 13px;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .mobile-class-card {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .mobile-class-card:last-child {
+      border-bottom: none;
+    }
+
+    .mobile-time {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-label);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .mobile-subject {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--primary);
+    }
+
+    .mobile-subject-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    @media (max-width: 768px) {
+      .schedule-container {
+        display: none !important;
+      }
+
+      .schedule-mobile-container {
+        display: block;
+      }
+
+      .schedule-table {
+        display: none;
+      }
     }
   </style>
 </head>
@@ -765,6 +843,7 @@
           </div>
 
           <div id="schedule-container" class="schedule-container" style="display: block;"></div>
+          <div id="schedule-mobile-container" class="schedule-mobile-container"></div>
         </div>
       </div>
 

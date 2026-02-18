@@ -165,10 +165,13 @@ function mostrarDetalle(r) {
   const btnHorario = document.getElementById("btn-ver-horario");
   const legend = document.getElementById("schedule-legend");
   const container = document.getElementById("schedule-container");
+  const mobileContainer = document.getElementById("schedule-mobile-container");
 
   // Reset UI features
   container.innerHTML = "";
   container.style.display = "none";
+  if (mobileContainer) mobileContainer.innerHTML = "";
+
   legend.style.display = "none";
 
   if (existeEnHorario) {
@@ -312,6 +315,67 @@ function renderSchedule(dni, nombre) {
 
   table.appendChild(tbody);
   container.appendChild(table);
+
+  // --- RENDER MOBILE VIEW ---
+  const mobileContainer = document.getElementById("schedule-mobile-container");
+  mobileContainer.innerHTML = "";
+
+  const diasMap = {
+    "LUNES": "LUNES",
+    "MARTES": "MARTES",
+    "MIERCOLES": "MIÉRCOLES",
+    "JUEVES": "JUEVES",
+    "VIERNES": "VIERNES",
+    "SABADO": "SÁBADO",
+    "DOMINGO": "DOMINGO"
+  };
+
+  Object.keys(diasMap).forEach(diaKey => {
+    // Filtrar clases para este día
+    const clasesDia = horarioDocente.filter(row => row[diaKey] && row[diaKey].trim().length > 0);
+
+    if (clasesDia.length > 0) {
+      const dayGroup = document.createElement("div");
+      dayGroup.className = "mobile-day-group";
+
+      const dayHeader = document.createElement("div");
+      dayHeader.className = "mobile-day-header";
+      dayHeader.textContent = diasMap[diaKey];
+      dayGroup.appendChild(dayHeader);
+
+      clasesDia.forEach(row => {
+        const horaInicio = row["Hora Inicio"] || "";
+        const horaFin = row["Hora Fin"] || "";
+        const curso = row[diaKey];
+        const cellClass = getCellClass(curso);
+
+        const card = document.createElement("div");
+        card.className = "mobile-class-card";
+
+        // Use inline style for background if needed, or just class on badge
+        // card.style.backgroundColor = ... (optional, maybe too colorful) 
+
+        card.innerHTML = `
+          <div class="mobile-time"><i class="ph ph-clock"></i> ${horaInicio} - ${horaFin}</div>
+          <div class="mobile-subject">${curso}</div>
+          <div style="margin-top: 4px;">
+            <span class="mobile-subject-badge ${cellClass}">${curso}</span>
+          </div>
+        `;
+        // Clean up: duplicated subject text. Let's remove the plain text if we use badge, or vice versa.
+        // Let's use just the badge for the subject + color.
+        card.innerHTML = `
+            <div class="mobile-time"><i class="ph ph-clock"></i> ${horaInicio} - ${horaFin}</div>
+            <span class="mobile-subject-badge ${cellClass}" style="width: fit-content;">${curso}</span>
+        `;
+
+        dayGroup.appendChild(card);
+      });
+
+      mobileContainer.appendChild(dayGroup);
+    }
+  });
+
   return true;
 }
 
